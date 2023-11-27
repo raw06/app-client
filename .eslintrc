@@ -1,0 +1,53 @@
+{
+    "extends": [
+        "airbnb",
+        "plugin:prettier/recommended",
+        "plugin:jest/recommended",
+        "plugin:jsx-a11y/recommended",
+        "plugin:import/recommended"
+    ],
+    "parser": "babel-eslint",
+    "env": {
+        "node": true,
+        "es6": true,
+        "browser": true
+    },
+    "settings": {
+        "import/resolver": {
+            "webpack": {
+                "config": "node_modules/laravel-mix/setup/webpack.config.js"
+            }
+        }
+    },
+    "plugins": ["react-hooks", "import"],
+    "ignorePatterns": ["/public/", "/resources/ext/js/*.js", "/resources/ext/assets/js/*.js"],
+    "rules": {
+        "react/jsx-filename-extension": [
+            1,
+            { "extensions": [".js", ".jsx"] }
+        ],
+        "react/jsx-one-expression-per-line": "off",
+        "implicit-arrow-linebreak": "off",
+        "react/jsx-no-bind": "off",
+        "comma-dangle": "off",
+        "react/prop-types": "warn",
+        "indent": "off",
+        "no-unused-vars": "warn",
+        "no-trailing-spaces": "off",
+        "no-underscore-dangle": "off",
+        "react/jsx-curly-newline": "off",
+        "react/no-unescaped-entities" : "off",
+        "react/jsx-wrap-multilines": [
+            "error",
+            { "declaration": false, "assignment": false }
+        ],
+        "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks
+        "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
+        "camelcase": "off",
+        "no-param-reassign": "off",
+        "react/forbid-prop-types": "off",
+        "import/prefer-default-export": "off",
+        "import/extensions": "off",
+        "react/jsx-props-no-spreading": "off"
+    }
+}

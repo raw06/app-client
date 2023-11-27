@@ -1,0 +1,40 @@
+version: '3'
+services:
+  # The Application
+  app:
+    container_name: ic-laravel
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    working_dir: /var/www
+    volumes:
+      - .:/var/www/
+      - ./storage:/var/www/storage
+  # The Database
+  database:
+    container_name: ic-mysql
+    image: mysql:5.7.35
+    volumes:
+      - ./docker/db/dbdata:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
+    environment:
+      MYSQL_DATABASE: ic-app
+      MYSQL_ROOT_PASSWORD: Icapp123456
+    ports:
+      - "33062:3306"
+
+  # The Web Server
+  web:
+    container_name: ic-nginx
+    build:
+      context: ./docker/web/
+      dockerfile: web.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./docker/web/:/var/www/
+      - ./public:/var/www/public
+      - ./storage:/var/www/storage
+    ports:
+      - "8888:80"
+      - "444:443"
