@@ -34,6 +34,9 @@ class OAuthController extends Controller
         $response = $response->json();
         $error = $request->get('error');
         if($error) {
+            logger()->error("Error authorize",  [
+                'err' => $error
+            ]);
             return redirect('/');
         }
         if($request->user()->shop()->token()) {
@@ -41,8 +44,8 @@ class OAuthController extends Controller
         }
         Integration::query()->updateOrCreate([
             'provider' => 'is',
-        ],[
             'shop_id' => $request->user()->shop()->id,
+        ],[
             'status' => 1,
             'access_token' => $response['access_token'],
             'expires_in' => $response['expires_in'],

@@ -1,7 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
+  Banner,
   BlockStack,
   Button,
+  ButtonGroup,
+  Icon,
   IndexTable,
   LegacyCard,
   Page,
@@ -11,6 +14,8 @@ import {
 import API_ROUTES from '../constants/api';
 import { useShop } from '../providers/ShopProvider';
 import { useFilesQuery } from '../api';
+import AppSpinner from '../components/AppSpinner';
+import { CircleDownMajor } from '@shopify/polaris-icons';
 
 export default function Dashboard() {
   const { info } = useShop();
@@ -35,33 +40,51 @@ export default function Dashboard() {
         '_self'
       );
     }
-  }, [status]);
-  if (isFetching) {
-    return <Page />;
-  }
+  }, [info.name, status]);
 
   const resourceName = {
     singular: 'file',
     plural: 'files'
   };
 
-  // const {
-  //   selectedResources,
-  //   allResourcesSelected,
-  //   handleSelectionChange
-  // } = useIndexResourceState(files);
+  const {
+    selectedResources,
+    allResourcesSelected,
+    handleSelectionChange
+  } = useIndexResourceState(files);
 
-  // const rowMarkup = files.map(({ id }, index) => (
-  //   <IndexTable.Row
-  //     id={id}
-  //     key={id}
-  //     selected={selectedResources.includes(id)}
-  //     position={index}
-  //   ></IndexTable.Row>
-  // ));
+  const rowMarkup = files.map(({ id, name, type, url }) => (
+    <IndexTable.Row
+      id={id}
+      key={id}
+      selected={selectedResources.includes(id)}
+    >
+      <IndexTable.Cell>
+        <Text variant="bodyMd" fontWeight="bold" as="span">
+          {name}
+        </Text>
+      </IndexTable.Cell>
+      <IndexTable.Cell>{type}</IndexTable.Cell>
+      <IndexTable.Cell>
+        <ButtonGroup>
+          <Button url={url}>
+            <Icon source={CircleDownMajor} />
+          </Button>
+        </ButtonGroup>
+      </IndexTable.Cell>
+    </IndexTable.Row>
+  ));
 
+  if (isFetching) {
+    return (
+      <Page fullWidth>
+        <AppSpinner />
+      </Page>
+    );
+  }
+  console.log(files);
   return (
-    <Page>
+    <Page fullWidth>
       <LegacyCard title="Welcome to App Partner">
         <LegacyCard.Section>
           <Text>Here we go!</Text>
@@ -71,7 +94,11 @@ export default function Dashboard() {
       </LegacyCard>
       <LegacyCard>
         <LegacyCard.Section>
-          <BlockStack align="space-between" inlineAlign="start">
+          <BlockStack
+            align="space-between"
+            inlineAlign="start"
+            gap={400}
+          >
             <Text>Integration Shopify App </Text>
             <Button
               onClick={handleRedirectOauth}
@@ -83,20 +110,33 @@ export default function Dashboard() {
           </BlockStack>
         </LegacyCard.Section>
       </LegacyCard>
+      {!status && (
+        <LegacyCard>
+          <Banner tone="critical">
+            <Text>
+              Unauthorized. Please click button connect to access your
+              file .
+            </Text>
+          </Banner>
+        </LegacyCard>
+      )}
       <LegacyCard>
-        <LegacyCard.Section>
-          {/* <IndexTable
-            resourceName={resourceName}
-            itemCount={files.length}
-            selectedItemsCount={
-              allResourcesSelected ? 'All' : selectedResources.length
-            }
-            onSelectionChange={handleSelectionChange}
-            headings={[]}
-          >
-            {rowMarkup}
-          </IndexTable> */}
-        </LegacyCard.Section>
+        <IndexTable
+          resourceName={resourceName}
+          itemCount={files.length}
+          selectedItemsCount={
+            allResourcesSelected ? 'All' : selectedResources.length
+          }
+          onSelectionChange={handleSelectionChange}
+          headings={[
+            { title: 'Name' },
+            { title: 'Type' },
+            { title: 'Action' }
+          ]}
+          selectable={false}
+        >
+          {rowMarkup}
+        </IndexTable>
       </LegacyCard>
     </Page>
   );
