@@ -17,6 +17,12 @@ class FileController extends Controller
         $query = http_build_query([
             'shop' => $shop->shop
         ]);
+        if(!$shop->token()) {
+            return response()->json([
+                'success' => false,
+                'message' => "Not integrated!"
+            ]);
+        }
         $url = config("integration.is.url.integration") . 'files';
         $response = Http::withoutVerifying()->withHeaders([
             'Accept' => 'application/json',
