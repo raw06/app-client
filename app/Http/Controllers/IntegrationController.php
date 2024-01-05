@@ -17,7 +17,7 @@ class IntegrationController extends Controller
         if(!$integration) {
             return response()->json([
                 'success' => false,
-                'data' => []
+                'data' => false
             ]);
         }
 

@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react';
 import {
+  Badge,
   Banner,
   BlockStack,
   Button,
   ButtonGroup,
   Icon,
   IndexTable,
+  InlineStack,
   LegacyCard,
   Page,
   Text,
@@ -99,7 +101,12 @@ export default function Dashboard() {
             inlineAlign="start"
             gap={400}
           >
-            <Text>Integration Shopify App </Text>
+            <InlineStack gap={200}>
+              <Text>Integration Raw App</Text>
+              <Badge tone={!status ? '' : 'success'}>
+                {!status ? 'Inactive' : 'Active'}
+              </Badge>
+            </InlineStack>
             <Button
               onClick={handleRedirectOauth}
               disabled={status}
