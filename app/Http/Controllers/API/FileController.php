@@ -42,8 +42,6 @@ class FileController extends Controller
     }
 
     public function destroy($id) {
-        dd($url);
-
         /** @var Shop $shop */
         $shop = $this->shop();
         if(!$shop->token()) {
