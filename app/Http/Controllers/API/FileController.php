@@ -57,7 +57,7 @@ class FileController extends Controller
             ]);
         }
 
-        $url = config("integration.is.url.integration") . 'file' . "/${$id}";
+        $url = config("integration.is.url.integration") . 'file' . "/$id";
         $response = Http::withoutVerifying()->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $shop->token()->access_token,
