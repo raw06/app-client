@@ -65,7 +65,7 @@ class FileController extends Controller
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $shop->token()->access_token,
         ])->delete($url . '?'. $query);
-
+        dd($response);
         if($response->unauthorized()) {
             return response()->json([
                 'success' => false,
