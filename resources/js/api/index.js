@@ -1,5 +1,5 @@
 import API_ROUTES from '../constants/api';
-import { useAppQuery } from '../hooks/useAppQuery';
+import { useAppMutation, useAppQuery } from '../hooks/useAppQuery';
 
 export const useProductsQuery = (params, reactQueryOptions = {}) => {
   return useAppQuery({
@@ -43,6 +43,17 @@ export const useTestQuery = (reactQueryOptions = {}) => {
 export const useFilesQuery = (reactQueryOptions = {}) => {
   return useAppQuery({
     url: `${API_ROUTES.FILE.INDEX}`,
+    reactQueryOptions
+  });
+};
+
+export const useDeleteFilesMutation = (
+  id,
+  reactQueryOptions = {}
+) => {
+  return useAppMutation({
+    method: 'DELETE',
+    url: API_ROUTES.FILE.REMOVE(id),
     reactQueryOptions
   });
 };

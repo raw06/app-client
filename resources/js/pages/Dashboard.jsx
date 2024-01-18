@@ -15,13 +15,16 @@ import {
 } from '@shopify/polaris';
 import API_ROUTES from '../constants/api';
 import { useShop } from '../providers/ShopProvider';
-import { useFilesQuery } from '../api';
+import { useDeleteFilesMutation, useFilesQuery } from '../api';
 import AppSpinner from '../components/AppSpinner';
-import { CircleDownMajor } from '@shopify/polaris-icons';
+import { CircleDownMajor, DeleteMinor } from '@shopify/polaris-icons';
+import { useToast } from '../hooks/useToast';
 
 export default function Dashboard() {
   const { info } = useShop();
   const [status, setStatus] = useState(true);
+  const { showToast } = useToast();
+  const [id, setId] = useState(null);
   const [files, setFiles] = useState([]);
   const { isFetching } = useFilesQuery({
     onSuccess: (data) => {
@@ -35,6 +38,21 @@ export default function Dashboard() {
     }
   });
 
+  const { isLoading, mutate } = useDeleteFilesMutation(id, {
+    onSuccess: () => {
+      showToast({
+        error: false,
+        message: 'Success'
+      });
+    },
+    onError: () => {
+      showToast({
+        error: true,
+        message: 'Failed'
+      });
+    }
+  });
+
   const handleRedirectOauth = useCallback(() => {
     if (!status) {
       window.open(
@@ -43,6 +61,14 @@ export default function Dashboard() {
       );
     }
   }, [info.name, status]);
+
+  const handleRemoveFile = useCallback(
+    (id) => {
+      setId(id);
+      mutate(id);
+    },
+    [mutate]
+  );
 
   const resourceName = {
     singular: 'file',
@@ -72,6 +98,15 @@ export default function Dashboard() {
           <Button url={url}>
             <Icon source={CircleDownMajor} />
           </Button>
+          <Button
+            tone="critical"
+            onClick={() => {
+              handleRemoveFile(id);
+            }}
+            loading={isLoading}
+          >
+            <Icon source={DeleteMinor} />
+          </Button>
         </ButtonGroup>
       </IndexTable.Cell>
     </IndexTable.Row>
@@ -84,7 +119,7 @@ export default function Dashboard() {
       </Page>
     );
   }
-  console.log(files);
+
   return (
     <Page fullWidth>
       <LegacyCard title="Welcome to App Partner">

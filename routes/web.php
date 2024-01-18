@@ -45,6 +45,7 @@ Route::group([
     Route::get('test', [TestController::class, 'test']);
     Route::get('shop-info', [ShopInfoController::class, 'getShopInfo']);
     Route::get('/files', [FileController::class, 'index'])->name('files');
+    Route::get('/file/${id}', [FileController::class, 'destroy'])->name('destroy.file');
     Route::get('/integration-status', [\App\Http\Controllers\IntegrationController::class, 'index']);
 });
 

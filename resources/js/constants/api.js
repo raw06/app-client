@@ -6,7 +6,8 @@ const API_ROUTES = {
   },
   AUTHORIZE: 'oauth/redirect',
   FILE: {
-    INDEX: 'files'
+    INDEX: 'files',
+    REMOVE: (id) => `file/${id}`
   },
   INTEGRATION: 'integration-status'
 };
