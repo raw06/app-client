@@ -44,6 +44,9 @@ class FileController extends Controller
     public function destroy($id) {
         /** @var Shop $shop */
         $shop = $this->shop();
+        $query = http_build_query([
+            'shop' => $shop->shop
+        ]);
         if(!$shop->token()) {
             return response()->json([
                 'success' => false,
@@ -61,7 +64,7 @@ class FileController extends Controller
         $response = Http::withoutVerifying()->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $shop->token()->access_token,
-        ])->delete($url);
+        ])->delete($url . '?'. $query);
 
         if($response->unauthorized()) {
             return response()->json([
