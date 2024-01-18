@@ -14,7 +14,7 @@ class OAuthController extends Controller
             'client_id' => config('integration.is.id'),
             'redirect_uri' => config('integration.is.redirect'),
             'response_type' => 'code',
-            'scope' => ['read_files', 'write_files'],
+            'scope' => ['read_files'],
             'shop_domain' => $request->get('shop'),
         ]);
         $url = config("integration.is.url.authorize");
