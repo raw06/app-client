@@ -61,7 +61,7 @@ class FileController extends Controller
         $response = Http::withoutVerifying()->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $shop->token()->access_token,
-        ])->post($url);
+        ])->delete($url);
 
         if($response->unauthorized()) {
             return response()->json([
