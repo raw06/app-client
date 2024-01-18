@@ -43,7 +43,7 @@ export default function Dashboard() {
       if (!data.success) {
         showToast({
           error: true,
-          message: data
+          message: data.message
         });
       } else {
         showToast({
