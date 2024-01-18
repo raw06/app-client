@@ -39,16 +39,23 @@ export default function Dashboard() {
   });
 
   const { isLoading, mutate } = useDeleteFilesMutation(id, {
-    onSuccess: () => {
-      showToast({
-        error: false,
-        message: 'Success'
-      });
+    onSuccess: (data) => {
+      if (!data.success) {
+        showToast({
+          error: true,
+          message: data
+        });
+      } else {
+        showToast({
+          error: false,
+          message: 'Success'
+        });
+      }
     },
-    onError: () => {
+    onError: (e) => {
       showToast({
         error: true,
-        message: 'Failed'
+        message: e
       });
     }
   });
