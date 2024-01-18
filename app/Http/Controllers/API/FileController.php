@@ -42,6 +42,8 @@ class FileController extends Controller
     }
 
     public function destroy($id) {
+        dd($url);
+
         /** @var Shop $shop */
         $shop = $this->shop();
         if(!$shop->token()) {
@@ -62,7 +64,6 @@ class FileController extends Controller
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $shop->token()->access_token,
         ])->delete($url);
-        dd($url);
         if($response->unauthorized()) {
             return response()->json([
                 'success' => false,
