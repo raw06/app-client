@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import { useShopInfoQuery } from '../api';
 import AppSpinner from '../components/AppSpinner';
 

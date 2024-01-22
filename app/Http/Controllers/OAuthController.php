@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Integration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 
 class OAuthController extends Controller
@@ -33,9 +34,10 @@ class OAuthController extends Controller
         ]);
         $response = $response->json();
         $error = $request->get('error');
-        if($error) {
+        if($error || Arr::has($response, 'error')) {
             logger()->error("Error authorize",  [
-                'err' => $error
+                'err' => $error,
+                'response' => json_encode($response)
             ]);
             return redirect('/');
         }

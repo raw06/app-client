@@ -62,10 +62,17 @@ export default function Dashboard() {
 
   const handleRedirectOauth = useCallback(() => {
     if (!status) {
-      window.open(
-        `https://pluginpartner.smartifyapps.com/${API_ROUTES.AUTHORIZE}?shop=${info.name}`,
-        '_self'
-      );
+      if (import.meta.env.VITE_APP_ENV === 'production') {
+        window.open(
+          `https://pluginpartner.smartifyapps.com/${API_ROUTES.AUTHORIZE}?shop=${info.name}`,
+          '_self'
+        );
+      } else {
+        window.open(
+          `https://ic-app.test:444/${API_ROUTES.AUTHORIZE}?shop=${info.name}`,
+          '_self'
+        );
+      }
     }
   }, [info.name, status]);
 
