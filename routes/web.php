@@ -51,7 +51,6 @@ Route::group([
 
 Route::get('/oauth/redirect', [OAuthController::class, 'redirect']);
 Route::get('/oauth/callback', [OAuthController::class, 'callback']);
-Route::get('/oauth/refresh', [OAuthController::class, 'refresh']);
 
 Route::post('/api/uninstall', [AppController::class, 'uninstalledWebhook'])->middleware('webhook-request');
 

@@ -3,27 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Integration;
+use GuzzleHttp\Exception\InvalidArgumentException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class OAuthController extends Controller
 {
     public function redirect(Request $request)
     {
+        $request->session()->put('state', $state = Str::random(40));
         $queries = http_build_query([
             'client_id' => config('integration.is.id'),
             'redirect_uri' => config('integration.is.redirect'),
             'response_type' => 'code',
             'scope' => ['read_files'],
             'shop_domain' => $request->get('shop'),
+            'state' => $state,
         ]);
         $url = config("integration.is.url.authorize");
         return redirect("$url?" . $queries);
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function callback(Request $request)
     {
+        $state = $request->session()->pull('state');
+        throw_unless(
+            strlen($state) > 0 && $state === $request->state ,
+            InvalidArgumentException::class
+        );
         $url = config("integration.is.url.token");
         $response = Http::withoutVerifying()->post($url, [
             'grant_type' => 'authorization_code',
@@ -32,8 +44,10 @@ class OAuthController extends Controller
             'redirect_uri' => config('integration.is.redirect'),
             'code' => $request->code
         ]);
+
         $response = $response->json();
         $error = $request->get('error');
+
         if($error || Arr::has($response, 'error')) {
             logger()->error("Error authorize",  [
                 'err' => $error,
@@ -48,37 +62,6 @@ class OAuthController extends Controller
             'provider' => 'is',
             'shop_id' => $request->user()->shop()->id,
         ],[
-            'status' => 1,
-            'access_token' => $response['access_token'],
-            'expires_in' => $response['expires_in'],
-            'refresh_token' => $response['refresh_token']]
-        );
-
-        return redirect('/');
-    }
-
-    public function refresh(Request $request)
-    {
-        $url = config("integration.is.url.token");
-        $response = Http::withoutVerifying()->post($url, [
-            'grant_type' => 'refresh',
-            'client_id' => config('integration.is.id'),
-            'client_secret' => config('integration.is.secret'),
-            'redirect_uri' => config('integration.is.redirect'),
-            'scope' => ['read_files', 'write_files']
-        ]);
-
-        if ($response->status() !== 200) {
-            $request->user()->token()->delete();
-
-            return redirect('/')
-                ->withStatus('Authorization failed from OAuth server.');
-        }
-
-        $response = $response->json();
-        Integration::query()->update([
-            'provider' => 'is',
-            'shop_id' => $request->user()->shop()->id,
             'status' => 1,
             'access_token' => $response['access_token'],
             'expires_in' => $response['expires_in'],
